@@ -269,15 +269,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function pollProgress(taskId) {
     if (activePollInterval) clearInterval(activePollInterval);
+    let errorCount = 0;
 
     activePollInterval = setInterval(async () => {
       try {
         const res = await fetch(`/api/progress/${taskId}`);
         if (!res.ok) {
-          clearInterval(activePollInterval);
-          showError("Download session lost. Please try again.");
+          errorCount++;
+          if (errorCount > 6) {
+            clearInterval(activePollInterval);
+            showError("Download session lost. Please try again.");
+          }
           return;
         }
+        errorCount = 0;
 
         const data = await res.json();
 

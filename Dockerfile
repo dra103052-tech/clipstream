@@ -18,5 +18,5 @@ COPY . .
 ENV PORT=7860
 EXPOSE 7860
 
-# Start server using production gunicorn WSGI
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-7860} --workers 2 --timeout 180 app:app"]
+# Start server using production gunicorn WSGI (single process with multithreading to share memory)
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-7860} --workers 1 --threads 8 --timeout 180 app:app"]
